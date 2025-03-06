@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
+// RECUPERER CODE SUR GITHUB: git pull
+
 void main() {
   runApp(const MyApp());
   // test de push
