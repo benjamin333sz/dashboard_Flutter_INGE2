@@ -46,6 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> fetchFishData() async {
     final url = Uri.parse('https://hubeau.eaufrance.fr/api/v1/etat_piscicole/indicateurs?code_operation=92843');
+    //https://hubeau.eaufrance.fr/api/v1/etat_piscicole/observations?code_operation=93411
     final response = await http.get(url);
 
     if (response.statusCode == 200 || response.statusCode==206) {
