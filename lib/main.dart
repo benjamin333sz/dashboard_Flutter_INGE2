@@ -1,13 +1,11 @@
-import 'dart:async';
-import 'dart:convert';
 import 'package:dashboard/const/constant.dart';
 import 'package:dashboard/screens/main_screen.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
 // RECUPERER CODE SUR GITHUB: git pull
 
 void main() {
+  // debugPaintSizeEnabled=true;
   runApp(const MyApp());
   // test de push
 }

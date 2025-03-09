@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-const cardBackgroundColor=Color(0xFF21222D);
+const cardBackgroundColor=Color(0xFFBABAFF);
 const primaryColor=Color(0xFF449DF5);
 const secondaryColor=Color(0xFFFFFFFF);
 const backgroundColor=Color(0xFFC8F8F2);
