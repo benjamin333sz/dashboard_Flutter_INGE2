@@ -25,7 +25,7 @@ class HeaderWidget extends StatelessWidget{
           contentPadding: const EdgeInsets.symmetric(
             vertical:5,
           ),
-          hintText: 'Search',
+          hintText: 'Recherche',
           prefixIcon: const Icon(
             Icons.search,
             color: Colors.grey,

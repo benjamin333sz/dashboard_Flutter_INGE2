@@ -70,7 +70,7 @@ class _ResultWidgetState extends State<ResultWidget> {
                   child: ListTile(
                     title: Text(fish.libelleStation ?? 'Station inconnue',
                         style: const TextStyle(fontWeight: FontWeight.bold)),
-                    subtitle: Text('Commune: ${fish.libelleCommune ?? "N/A"}'),
+                    subtitle: Text('Commune : ${fish.libelleCommune ?? "N/A"}'),
                     trailing: Text(fish.dateOperation.split("T")[0]),
                   ),
                 );
