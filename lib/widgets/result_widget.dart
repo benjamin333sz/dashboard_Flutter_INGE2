@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/result_data.dart';
 import '../model/result_model.dart';
+import '../providers/fish_provider.dart';
+import '../widgets/header_widget.dart';
 
-class ResultWidget extends StatefulWidget {
+class ResultWidget extends ConsumerStatefulWidget {
   const ResultWidget({super.key});
 
   @override
-  State<ResultWidget> createState() => _ResultWidgetState();
+  ConsumerState<ResultWidget> createState() => _ResultWidgetState();
 }
-class _ResultWidgetState extends State<ResultWidget> {
+class _ResultWidgetState extends ConsumerState<ResultWidget> {
   List<ResultModel> _fishData = [];
   bool _isLoading = true;
   bool _hasMoreData = true;

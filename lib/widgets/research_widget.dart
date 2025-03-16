@@ -7,10 +7,10 @@ class ResearchWidget extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
-    return const Column(
+    return  Column(
       children: [
-        const SizedBox(height:18),
-        const HeaderWidget(),
+         SizedBox(height:18),
+         HeaderWidget(),
       ],
     );
   }

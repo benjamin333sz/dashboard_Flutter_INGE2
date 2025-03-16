@@ -7,11 +7,10 @@ class TitleWidget extends StatelessWidget{
   @override
   Widget build(BuildContext context){
     return Expanded(
-      child: TextField(
-        decoration: InputDecoration(
-
-            hintText:'Présentations stations'
-        )
+      child: Text(
+          'Présentations stations',
+        style: TextStyle(fontSize: 24),
+        textAlign: TextAlign.center,
 
       ),
     );
