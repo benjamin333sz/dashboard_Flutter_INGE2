@@ -12,7 +12,7 @@ class HeaderWidget extends ConsumerWidget{
 
 
     return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         decoration: BoxDecoration(
         color: cardBackgroundColor, // Fond du champ de texte
         borderRadius: BorderRadius.circular(12.0),
@@ -54,14 +54,15 @@ class HeaderWidget extends ConsumerWidget{
         const SizedBox(width: 8),
         IconButton(
           icon :Icon(
-            Icons.search,
-            color: Colors.grey,
+            Icons.menu,
+            color: Colors.black,
 
 
           ),
           onPressed: () {
-            // Affiche le texte saisi dans la console
-            ref.refresh(fishDataProvider);
+            final searchQuery = ref.read(searchProvider);
+            ref.read(fishDataProvider.notifier).resetData(searchQuery);
+
             //_controller.clear();
           },
 
