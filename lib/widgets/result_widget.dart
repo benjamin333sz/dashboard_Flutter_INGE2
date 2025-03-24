@@ -63,7 +63,8 @@ class _ResultWidgetState extends ConsumerState<ResultWidget> {
               child: ListTile(
                         title: Text(fish.libelleStation ?? 'Station inconnue',
                         style: const TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle: Text('Commune : ${fish.libelleCommune ?? "N/A"}'),
+                        subtitle: Text('Commune : ${fish.libelleCommune ?? "N/A"} \n ipr_code_classe : ${fish.ipr_code_classe ?? "N/A"} \n ipr_libelle_classe : ${fish.ipr_libelle_classe ?? "N/A"}'),
+
                         trailing: Text(fish.dateOperation.split("T")[0]),
                         ),
           );
