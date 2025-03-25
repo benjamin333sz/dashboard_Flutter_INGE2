@@ -40,7 +40,23 @@ class FishDataNotifier extends StateNotifier<List<ResultModel>> {
   }
 
 
+  Future<void> fetchStationData(String stationName) async {
+    if (_isLoading) return;
 
+    _isLoading = true;
+    final newData = await ResultData.fetchFishData(libelle_station: stationName);
+
+    if (newData.isNotEmpty) {
+      final existingCodes = state.map((e) => e.codeOperation).toSet();
+      final filteredData = newData.where((e) => !existingCodes.contains(e.codeOperation)).toList();
+
+      if (filteredData.isNotEmpty) {
+        state = [...state, ...filteredData];
+      }
+    }
+
+    _isLoading = false;
+  }
 
   void resetData(String newSearchQuery) {
     state = [];
