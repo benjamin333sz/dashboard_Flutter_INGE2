@@ -19,7 +19,6 @@ class ResultModel {
     required this.ipr_code_classe,
     required this.ipr_libelle_classe,
 
-
   });
 
   factory ResultModel.fromJson(Map<String, dynamic> json) {

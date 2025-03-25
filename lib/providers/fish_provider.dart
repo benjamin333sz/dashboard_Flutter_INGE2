@@ -1,7 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/result_data.dart';
-import '../model/result_model.dart';
-
+import '../model/prelevement_model.dart';
+import '../model/station_model.dart';
+import '../data/station_data.dart';
 
 
 final searchProvider = StateProvider<String>((ref) => '');
@@ -40,7 +41,23 @@ class FishDataNotifier extends StateNotifier<List<ResultModel>> {
   }
 
 
+  Future<void> fetchStationData(String stationName) async {
+    if (_isLoading) return;
 
+    _isLoading = true;
+    final newData = await ResultData.fetchFishData(libelle_station: stationName);
+
+    if (newData.isNotEmpty) {
+      final existingCodes = state.map((e) => e.codeOperation).toSet();
+      final filteredData = newData.where((e) => !existingCodes.contains(e.codeOperation)).toList();
+
+      if (filteredData.isNotEmpty) {
+        state = [...state, ...filteredData];
+      }
+    }
+
+    _isLoading = false;
+  }
 
   void resetData(String newSearchQuery) {
     state = [];
@@ -50,6 +67,39 @@ class FishDataNotifier extends StateNotifier<List<ResultModel>> {
     fetchMoreData();
   }
 }
+
+
+
+
+
+
+
+class StationNotifier extends StateNotifier<AsyncValue<List<StationModel>>> {
+  final StationData _stationData;
+
+  StationNotifier(this._stationData) : super(const AsyncValue.loading()) {
+    fetchStations();
+  }
+
+  Future<void> fetchStations() async {
+    try {
+      final stations = await _stationData.fetchStations();
+      state = AsyncValue.data(stations);
+    } catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+    }
+  }
+}
+
+// Provider global
+final stationProvider = StateNotifierProvider<StationNotifier, AsyncValue<List<StationModel>>>(
+      (ref) => StationNotifier(StationData()),
+);
+
+
+
+
+
 
 
 

@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../model/result_model.dart';
+import '../model/prelevement_model.dart';
 
 class ResultData {
   static const String baseUrl = 'https://hubeau.eaufrance.fr/api/v1/etat_piscicole/indicateurs';
