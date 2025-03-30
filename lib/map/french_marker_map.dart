@@ -5,6 +5,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/fish_provider.dart';
+import 'package:intl/intl.dart';
 
 const LatLng currentLocation = LatLng(48.859651, 2.341497);
 
@@ -24,7 +25,7 @@ class FrenchMarkerMap extends ConsumerWidget {
               options: MapOptions(
                 initialCenter: currentLocation, // Coordonnées de Paris
                 initialZoom: 13.0,
-                onTap: (_, __) => Navigator.pop(context),
+                onTap: (_, __) => {},
               ),
               children: [
                 TileLayer(
@@ -32,7 +33,12 @@ class FrenchMarkerMap extends ConsumerWidget {
 
                 ),
                 MarkerLayer(
-                  markers: stations.map((station) => Marker(
+                  markers: stations
+                      .where((station) =>
+                        station.prelevements.isNotEmpty &&
+                        station.libelle_station.trim().isNotEmpty)
+
+                      .map((station) => Marker(
 
                       width: 80.0,
                       height: 80.0,
@@ -42,12 +48,22 @@ class FrenchMarkerMap extends ConsumerWidget {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: Text(station.libelleStation),
+                            title: Text(station.libelle_station),
                             content: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text("📍 Région : ${station.libelleRegion}"),
-                                Text("📌 Coordonnées : ${station.latitude}, ${station.longitude}"),
+                                Card(
+                                      child: ExpansionTile(
+                                      title: Text(station.libelle_station),
+                                      subtitle: Text('Prélèvements: ${station.prelevements.length}'),
+                                      children: station.prelevements.map((prelevement) {
+                                        return ListTile(
+                                          title: Text('📅 Date: ${prelevement.date_operation.toString()}'),
+                                          subtitle: Text('📊 Classe: ${prelevement.ipr_code_classe} - ${prelevement.ipr_libelle_classe}'),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  )
                               ],
                             ),
                             actions: [

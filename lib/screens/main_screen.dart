@@ -31,7 +31,7 @@ class MainScreen extends StatelessWidget{
                 children: [
                   Expanded(flex: 1, child: TitleWidget()),
                   Expanded(flex: 2, child: ResearchWidget()),
-                  Expanded(flex: 10, child: FrenchRegionsMap()),
+                  Expanded(flex: 10, child: FrenchMarkerMap()),
                 ],
               ),
             );
