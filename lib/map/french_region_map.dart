@@ -38,7 +38,7 @@ class FrenchRegionsMap extends StatelessWidget {
               ),
               Polygon(
                 points: [
-                  LatLng(49.8566, 1.3522), // Paris
+                  LatLng(50.9, 1.6), // Paris
                   LatLng(45.7, 1.1), // Point approximatif sud-ouest IDF
                   LatLng(44.0, 2.5), // Point approximatif nord IDF
                   LatLng(44.9, 3.1), // Point approximatif est IDF
