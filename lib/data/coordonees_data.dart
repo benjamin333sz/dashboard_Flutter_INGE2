@@ -8,10 +8,6 @@ class FrenchRegionsMap extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Régions de France')),
       body: FlutterMap(
-        options: MapOptions(
-          initialCenter: LatLng(46.603354, 1.878334), // Centre de la France
-          initialZoom: 5.5,
-        ),
         children: [
           TileLayer(
             urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
