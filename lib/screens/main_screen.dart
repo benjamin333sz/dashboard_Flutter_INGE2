@@ -1,5 +1,5 @@
 import 'package:dashboard/map/french_marker_map.dart';
-import 'package:dashboard/map/french_region_map.dart';
+import 'package:dashboard/data/coordonees_data.dart';
 import 'package:dashboard/widgets/result_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
