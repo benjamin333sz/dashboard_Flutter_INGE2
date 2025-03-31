@@ -17,7 +17,7 @@ class StationData {
     while (hasMore) {
       try {
         print('📡 Requête API allPrelevement- Page $page');
-        final response = await dio.get('$prelevementUrl?page=$page&size=$limit&date_operation_min=2024-01-01');
+        final response = await dio.get('$prelevementUrl?page=$page&size=$limit');//&date_operation_min=2024-01-01
 
         if (response.statusCode != 200 && response.statusCode != 206) {
           print('❌ Erreur API allPrelevement - Code : ${response.statusCode}');

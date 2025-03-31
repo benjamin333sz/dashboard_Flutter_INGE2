@@ -1,3 +1,4 @@
+import 'package:dashboard/const/constant.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_map/flutter_map.dart';
@@ -16,6 +17,25 @@ class FrenchMarkerMap extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final stationsState = ref.watch(stationProvider);
+
+    Color getMarkerColor(String iprCodeClasse) {
+      switch (iprCodeClasse) {
+        case '1':
+          return iprTresBon; // Très bon état
+        case '2':
+          return iprBon; // Bon état
+        case '3':
+          return iprMoyen; // Moyen état
+        case '4':
+          return iprMauvais; // Mauvais état
+        case '5':
+          return iprTresMauvais; // Très mauvais état
+        default:
+          return iprDefault; // Inconnu
+      }
+    }
+
+
     return
 
       Scaffold(
@@ -32,6 +52,9 @@ class FrenchMarkerMap extends ConsumerWidget {
                   urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
 
                 ),
+
+
+
                 MarkerLayer(
                   markers: stations
                       .where((station) =>
@@ -75,7 +98,7 @@ class FrenchMarkerMap extends ConsumerWidget {
                           ),
                         );
                       },
-                      child: Icon(Icons.location_pin, color: Colors.green, size: 40),
+                      child: Icon(Icons.location_pin, color: getMarkerColor(station.prelevements.first.ipr_code_classe), size: 40),
                     ),
                 )).toList(),
 

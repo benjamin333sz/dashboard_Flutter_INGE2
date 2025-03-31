@@ -27,11 +27,11 @@ class MainScreen extends StatelessWidget{
                 horizontal: horizontalPadding,
                 vertical: verticalPadding,
               ),
-              child: Column(
+              child: Row(
                 children: [
-                  Expanded(flex: 1, child: TitleWidget()),
-                  Expanded(flex: 2, child: ResearchWidget()),
-                  Expanded(flex: 10, child: FrenchMarkerMap()),
+                  //Expanded(flex: 1, child: TitleWidget()),
+                  //Expanded(flex: 2, child: ResearchWidget()),
+                  Expanded(flex: 10, child: FrenchRegionsMap()),
                 ],
               ),
             );

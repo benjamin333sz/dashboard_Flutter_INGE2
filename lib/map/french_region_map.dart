@@ -20,7 +20,7 @@ class FrenchRegionsMap extends StatelessWidget {
 
           ),
 
-          // Couche pour les régions colorées
+
           PolygonLayer(
             polygons: [
               Polygon(
@@ -36,6 +36,21 @@ class FrenchRegionsMap extends StatelessWidget {
 
 
               ),
+              Polygon(
+                points: [
+                  LatLng(49.8566, 1.3522), // Paris
+                  LatLng(45.7, 1.1), // Point approximatif sud-ouest IDF
+                  LatLng(44.0, 2.5), // Point approximatif nord IDF
+                  LatLng(44.9, 3.1), // Point approximatif est IDF
+                ],
+                color: Colors.yellow.withOpacity(0.4), // Couleur bleue remplie
+                borderColor: Colors.yellow,
+                borderStrokeWidth: 2.0,
+
+
+              ),
+
+
             ],
           ),
         ],
