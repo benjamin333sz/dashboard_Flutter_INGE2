@@ -1,5 +1,6 @@
 class StationModel {
   final String code_station;
+  final String code_region;
   final String libelle_station;
   final String libelle_commune;
   final String libelle_region;
@@ -14,6 +15,7 @@ class StationModel {
     required this.libelle_region,
     required this.latitude,
     required this.longitude,
+    required this.code_region,
     List<Prelevement>? prelevements,
   }) : prelevements = prelevements ?? [];
 
@@ -25,6 +27,7 @@ class StationModel {
       libelle_region: json['libelle_region'] ?? '',
       latitude: json['latitude']?.toDouble() ?? 0.0,
       longitude: json['longitude']?.toDouble() ?? 0.0,
+      code_region: json['code_region'] ?? '',
       prelevements: [],
     );
   }
@@ -38,6 +41,7 @@ class StationModel {
       latitude: latitude,
       longitude: longitude,
       prelevements: prelevements ?? this.prelevements,
+      code_region: code_region,
     );
   }
 }
@@ -48,13 +52,16 @@ class Prelevement {
   final String ipr_libelle_classe;
   final String libelle_station;
   final String code_station;
+  final String code_region;
 
   Prelevement({
     required this.date_operation,
     required this.ipr_code_classe,
     required this.ipr_libelle_classe,
     required this.libelle_station,
-    required this.code_station
+    required this.code_station,
+    required this.code_region,
+
   });
 
   factory Prelevement.fromJson(Map<String, dynamic> json) {
@@ -75,6 +82,7 @@ class Prelevement {
       ipr_libelle_classe: json['ipr_libelle_classe'] ?? '',
       libelle_station: json['libelle_station'] ?? '',
       code_station: json['code_station'] ?? '',
+      code_region: json['code_region'] ?? '',
     );
   }
 
