@@ -53,6 +53,7 @@ class Prelevement {
   final String libelle_station;
   final String code_station;
   final String code_region;
+  final double ipr_note;
 
   Prelevement({
     required this.date_operation,
@@ -61,6 +62,7 @@ class Prelevement {
     required this.libelle_station,
     required this.code_station,
     required this.code_region,
+    required this.ipr_note,
 
   });
 
@@ -79,6 +81,7 @@ class Prelevement {
 
       date_operation: DateTime.parse(json['date_operation']),
       ipr_code_classe: json['ipr_code_classe'] ?? '',
+      ipr_note: json['ipr_note']?.toDouble() ?? 0.0,
       ipr_libelle_classe: json['ipr_libelle_classe'] ?? '',
       libelle_station: json['libelle_station'] ?? '',
       code_station: json['code_station'] ?? '',

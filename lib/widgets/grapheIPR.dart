@@ -126,7 +126,7 @@ class GraphIprRegion extends ConsumerWidget {
 
         Map<String, Map<int, double>> evolutionIPR = calculerEvolutionIPRParRegion(stations);
 
-        String regionSelectionnee = "Grand Est";
+        String regionSelectionnee = "Normandie";
         Map<int, double> donneesGraphique = evolutionIPR[regionSelectionnee] ?? {};
 
         // 📌 Étape 1: Filtrer les valeurs et moyenner si plusieurs mesures par an
@@ -144,27 +144,15 @@ class GraphIprRegion extends ConsumerWidget {
 
         // 📌 Étape 3: Transformer en points pour la courbe
         List<FlSpot> points = sortedData.map((entry) {
-          return FlSpot(entry.key.toDouble(), entry.value);
+
+          return FlSpot(entry.key.toDouble(), double.parse((entry.value).toStringAsFixed(5)));
         }).toList();
 
-        return Scaffold(
-          appBar: AppBar(title: Text("Évolution de l'IPR")),
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                Text(
-                  "Évolution de l'IPR pour $regionSelectionnee",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 20),
-
-                // ✅ Rend le graphe responsive
-                Expanded(
+        return Expanded(// ✅ Rend le graphe responsive
                   child: LineChart(
                     LineChartData(
-                      minY: 1, // ✅ Fixe l'axe Y entre 1 et 5
-                      maxY: 5,
+                      minY: 0.8, // ✅ Fixe l'axe Y entre 1 et 5
+                      maxY: 5.2,
 
                       gridData: FlGridData(show: false),
                       titlesData: FlTitlesData(
@@ -217,12 +205,7 @@ class GraphIprRegion extends ConsumerWidget {
                       ],
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
         );
-
       },
       loading: () => Center(child: CircularProgressIndicator()), // Indicateur de chargement
       error: (err, stack) => Center(child: Text("Erreur: $err")), // Gestion d'erreur

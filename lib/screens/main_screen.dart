@@ -1,11 +1,13 @@
 import 'package:dashboard/map/french_marker_map.dart';
 import 'package:dashboard/map/french_region_map.dart';
+import 'package:dashboard/widgets/legende_graph_region.dart';
 import 'package:dashboard/widgets/result_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../map/french_marker_map.dart';
 import '../widgets/research_widget.dart';
 import '../widgets/title_widget.dart';
+import '../widgets/grapheIPR.dart';
 
 
 
@@ -31,7 +33,7 @@ class MainScreen extends StatelessWidget{
                 children: [
                   //Expanded(flex: 1, child: TitleWidget()),
                   //Expanded(flex: 2, child: ResearchWidget()),
-                  Expanded(flex: 10, child: FrenchRegionMaps()),
+                  Expanded( child: LegendeGraphRegion()),
                 ],
               ),
             );
