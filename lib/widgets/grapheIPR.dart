@@ -17,7 +17,8 @@ class GraphIprRegion extends ConsumerWidget {
 
 
   double calculerMoyenneIPRParAnnee(List<Prelevement> prelevements,
-      List<int> annees) {
+      List<int> annees)
+  {
     List<double> valeursIPR = prelevements
         .where((p) =>
         annees.contains(p.date_operation.year)) // Filtre par année
@@ -47,8 +48,7 @@ class GraphIprRegion extends ConsumerWidget {
     "94": "Corse"
   };
 
-  Map<String, List<Prelevement>> regrouperPrelevementsParRegion(
-      List<StationModel> stations) {
+  Map<String, List<Prelevement>> regrouperPrelevementsParRegion(List<StationModel> stations) {
     Map<String, List<Prelevement>> prelevementsParRegion = {};
 
     for (var station in stations) {
@@ -64,20 +64,10 @@ class GraphIprRegion extends ConsumerWidget {
     return prelevementsParRegion;
   }
 
-  Map<String, double> calculerMoyenneParRegionAvecFiltre(
-      List<StationModel> stations, List<int> annees) {
-    Map<String,
-        List<
-            Prelevement>> prelevementsParRegion = regrouperPrelevementsParRegion(
-        stations);
 
-    return prelevementsParRegion.map((region, prelevements) =>
-        MapEntry(region, calculerMoyenneIPRParAnnee(prelevements, annees))
-    );
-  }
 
-  Map<String, Map<int, double>> calculerEvolutionIPRParRegion(
-      List<StationModel> stations) {
+  Map<String, Map<int, double>> calculerEvolutionIPRParRegion(List<StationModel> stations)
+  {
     Map<String, Map<int, List<double>>> iprParRegionEtAnnee = {};
 
     for (var station in stations) {
@@ -110,19 +100,91 @@ class GraphIprRegion extends ConsumerWidget {
   }
 
 
+
+
+
+
+
+
+
+
+
+  Color getColorForValue(double value) {
+    if (value == 1) return iprTresBon;
+    if (value <= 2) return iprBon;
+    if (value <= 3) return iprMoyen;
+    if (value <= 4) return iprMauvais;
+    return iprTresMauvais;
+  }
+
+  List<LineChartBarData> generateGradientLineBars(List<FlSpot> points) {
+    List<LineChartBarData> lineBars = [];
+    Set<FlSpot> drawnPoints = {}; // Ensemble pour suivre les points déjà dessinés
+
+    // Initialiser la première paire de points pour commencer le tracé.
+    if (points.isNotEmpty) {
+      // On va parcourir les points successivement
+      FlSpot previousPoint = points[0];
+      drawnPoints.add(previousPoint); // Ajouter le premier point comme déjà dessiné
+
+      for (int i = 1; i < points.length; i++) {
+        FlSpot currentPoint = points[i];
+
+        // Vérifier si le point courant a déjà été dessiné
+        if (drawnPoints.contains(currentPoint)) {
+          // Si le point existe déjà, ne pas ajouter de segment supplémentaire
+          continue;
+        }
+
+        Color startColor = getColorForValue(previousPoint.y);
+        Color endColor = getColorForValue(currentPoint.y);
+
+        // Ajouter un segment entre le point précédent et le point courant
+        lineBars.add(
+          LineChartBarData(
+            spots: [previousPoint, currentPoint], // Segment entre le point précédent et le point courant
+            isCurved: true,
+            barWidth: 4,
+            gradient: LinearGradient(
+              colors: [startColor, endColor], // Dégradé entre les couleurs
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+            ),
+            dotData: FlDotData(
+              show: true,
+              getDotPainter: (spot, percent, barData, index) {
+                return FlDotCirclePainter(
+                  radius: 5,
+                  color: getColorForValue(spot.y),
+                  strokeWidth: 1.5,
+                  strokeColor: Colors.white,
+                );
+              },
+            ),
+            belowBarData: BarAreaData(show: false),
+          ),
+        );
+
+        // Ajouter le point courant à l'ensemble des points dessinés
+        drawnPoints.add(currentPoint);
+
+        // Mettre à jour le point précédent pour la prochaine itération
+        previousPoint = currentPoint;
+      }
+    }
+
+    return lineBars;
+  }
+
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final stationsState = ref.watch(stationProvider);
 
     return stationsState.when(
       data: (stations) {
-        List<int> anneesFiltre = [2022, 2023];
-        List<int> anneeBase = [2024];
 
-        final moyennesParRegion = calculerMoyenneParRegionAvecFiltre(stations, anneeBase);
-        moyennesParRegion.forEach((region, moyenneIPR) {
-          //print("Région: $region - Moyenne IPR: ${moyenneIPR.toStringAsFixed(5)}");
-        });
+
 
         Map<String, Map<int, double>> evolutionIPR = calculerEvolutionIPRParRegion(stations);
 
@@ -143,68 +205,79 @@ class GraphIprRegion extends ConsumerWidget {
           ..sort((a, b) => a.key.compareTo(b.key));
 
         // 📌 Étape 3: Transformer en points pour la courbe
-        List<FlSpot> points = sortedData.map((entry) {
-
+        List<FlSpot> points = sortedData.map((entry)
+        {
           return FlSpot(entry.key.toDouble(), double.parse((entry.value).toStringAsFixed(5)));
         }).toList();
 
         return Expanded(// ✅ Rend le graphe responsive
-                  child: LineChart(
-                    LineChartData(
-                      minY: 0.8, // ✅ Fixe l'axe Y entre 1 et 5
-                      maxY: 5.2,
-
-                      gridData: FlGridData(show: false),
-                      titlesData: FlTitlesData(
-                        leftTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: 30, // ✅ Espace pour éviter le chevauchement
-                          ),
-                        ),
-                        bottomTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            interval: 5, // ✅ Afficher les années tous les 5 ans
-                            getTitlesWidget: (value, meta) {
-                              return Text(
-                                value.toInt().toString(), // ✅ Affichage correct des années
-                                style: TextStyle(fontSize: 12),
-                              );
-                            },
-                          ),
-                        ),
-                        topTitles: AxisTitles(
-                          sideTitles: SideTitles(showTitles: false), // ✅ Supprime les "2K"
-                        ),
-                      ),
-
-                      borderData: FlBorderData(show: true),
-                      lineBarsData: [
-                        LineChartBarData(
-                          spots: points,
-                          isCurved: true, // ✅ Courbe plus fluide
-                          barWidth: 3,
-                          color: Colors.blue,
-                          dotData: FlDotData(
-                            show: true,
-                            getDotPainter: (spot, percent, barData, index) {
-                              return FlDotCirclePainter(
-                                radius: 3,
-                                color: Colors.blue,
-                                strokeWidth: 1,
-                                strokeColor: Colors.white,
-                              );
-                            },
-                          ),
-                          belowBarData: BarAreaData(show: false),
-
-                          // ✅ Arrondir les valeurs affichées
-                          showingIndicators: List.generate(points.length, (i) => i),
-                        ),
-                      ],
-                    ),
+          child: LineChart(
+            LineChartData(
+              minY: 0.8, // ✅ Fixe l'axe Y entre 1 et 5
+              maxY: 5.2,
+              backgroundColor: backgroundGraph,
+              gridData: FlGridData(
+                show: true,
+                drawVerticalLine: true,
+                drawHorizontalLine: true,
+                getDrawingHorizontalLine: (value) {
+                  return FlLine(
+                    color: Colors.grey.shade300,
+                    strokeWidth: 1,
+                  );
+                },
+                getDrawingVerticalLine: (value) {
+                  return FlLine(
+                    color: Colors.grey.shade300,
+                    strokeWidth: 1,
+                  );
+                },
+              ),
+              titlesData: FlTitlesData
+                (
+                leftTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 30, // ✅ Espace pour éviter le chevauchement
                   ),
+                ),
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    interval: 5, // ✅ Afficher les années tous les 5 ans
+                    getTitlesWidget: (value, meta) {
+                      return Text(
+                        value.toInt().toString(), // ✅ Affichage correct des années
+                        style: TextStyle(fontSize: 12),
+                      );
+                    },
+                  ),
+                ),
+                topTitles: AxisTitles(
+                  sideTitles: SideTitles(showTitles: false), // ✅ Supprime les "2K"
+                ),
+              ),
+              borderData: FlBorderData(show: true),
+
+              lineBarsData: generateGradientLineBars(points),
+              lineTouchData: LineTouchData(
+                enabled: true,  // Active les interactions avec la ligne
+                handleBuiltInTouches: true,  // Active la gestion des touches par défaut
+                touchCallback: (FlTouchEvent event, LineTouchResponse? response) {
+                  if (response == null || response.lineBarSpots == null) {
+                    return;
+                  }
+                  if (event is FlTapUpEvent) {
+                    // Gérer l'événement de tap si nécessaire
+                  }
+                },
+
+              ),
+
+
+
+            ),
+          ),
         );
       },
       loading: () => Center(child: CircularProgressIndicator()), // Indicateur de chargement

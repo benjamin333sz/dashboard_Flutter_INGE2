@@ -7,21 +7,23 @@ class LegendeGraphRegion extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
-    return Column(
-      children: [
-        Expanded(
-          child: Text(
-            "Dégradation de l'Indice Poisson Rivière (IPR) ",
-            style: TextStyle(fontSize: 24),
-            textAlign: TextAlign.center,
+    return SafeArea(
+      child: Column(
+        children: [
+          Expanded(
+            child: Text(
+              "Dégradation de l'Indice Poisson Rivière (IPR) ",
+              style: TextStyle(fontSize: 24),
+              textAlign: TextAlign.center,
 
+            ),
           ),
-        ),
-        GraphIprRegion(),
-        Expanded(
-          child: Text("Légende : 1 : Très bon état, 2 : Bon état, 3 : moyen état, 4 : mauvais état, 5 : Très mauvais état"),)
+          GraphIprRegion(),
+          Expanded(
+            child: Text("Légende : 1 : Très bon état, 2 : Bon état, 3 : moyen état, 4 : mauvais état, 5 : Très mauvais état"),)
 
-      ],
+        ],
+      ),
     );
   }
 }
