@@ -19,6 +19,7 @@ class LegendeGraphRegion extends StatelessWidget{
             ),
           ),
           GraphIprRegion(),
+          SizedBox(height: 50),
           Expanded(
             child: Text("Légende : 1 : Très bon état, 2 : Bon état, 3 : moyen état, 4 : mauvais état, 5 : Très mauvais état"),)
 

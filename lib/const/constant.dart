@@ -18,3 +18,20 @@ const iprDefault=Color(0xFF757575);
 
 
 const defaultPaddging = 20.0;
+
+
+Map<String, String> correspondanceRegions = {
+  "11": "Île-de-France",
+  "24": "Centre-Val de Loire",
+  "27": "Bourgogne-Franche-Comté",
+  "28": "Normandie",
+  "32": "Hauts-de-France",
+  "44": "Grand Est",
+  "52": "Pays de ma Loire",
+  "53": "Bretagne",
+  "75": "Nouvelle-Aquitaine",
+  "76": "Occitanie",
+  "84": "Auvergne-Rhône-Alpes",
+  "93": "Provences-Alpes-Côte d'Azur",
+  "94": "Corse"
+};

@@ -7,46 +7,20 @@ import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_ti
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/fish_provider.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
-
-
-
 class GraphIprRegion extends ConsumerWidget {
-
-
-  double calculerMoyenneIPRParAnnee(List<Prelevement> prelevements,
-      List<int> annees)
-  {
+  double calculerMoyenneIPRParAnnee(List<Prelevement> prelevements, List<int> annees) {
     List<double> valeursIPR = prelevements
-        .where((p) =>
-        annees.contains(p.date_operation.year)) // Filtre par année
+        .where((p) => annees.contains(p.date_operation.year))
         .map((p) => double.tryParse(p.ipr_code_classe) ?? 0.0)
-        .where((ipr) => ipr > 0) // Évite les valeurs nulles ou invalides
+        .where((ipr) => ipr > 0)
         .toList();
 
     if (valeursIPR.isEmpty) return 0.0;
 
     return valeursIPR.reduce((a, b) => a + b) / valeursIPR.length;
   }
-
-
-  Map<String, String> correspondanceRegions = {
-    "11": "Île-de-France",
-    "24": "Centre-Val de Loire",
-    "27": "Bourgogne-Franche-Comté",
-    "28": "Normandie",
-    "32": "Hauts-de-France",
-    "44": "Grand Est",
-    "52": "Pays de ma Loire",
-    "53": "Bretagne",
-    "75": "Nouvelle-Aquitaine",
-    "76": "Occitanie",
-    "84": "Auvergne-Rhône-Alpes",
-    "93": "Provences-Alpes-Côte d'Azur",
-    "94": "Corse"
-  };
 
   Map<String, List<Prelevement>> regrouperPrelevementsParRegion(List<StationModel> stations) {
     Map<String, List<Prelevement>> prelevementsParRegion = {};
@@ -64,10 +38,13 @@ class GraphIprRegion extends ConsumerWidget {
     return prelevementsParRegion;
   }
 
+  Map<String, double> calculerMoyenneParRegionAvecFiltre(List<StationModel> stations, List<int> annees) {
+    Map<String, List<Prelevement>> prelevementsParRegion = regrouperPrelevementsParRegion(stations);
+    return prelevementsParRegion.map((region, prelevements) =>
+        MapEntry(region, calculerMoyenneIPRParAnnee(prelevements, annees)));
+  }
 
-
-  Map<String, Map<int, double>> calculerEvolutionIPRParRegion(List<StationModel> stations)
-  {
+  Map<String, Map<int, double>> calculerEvolutionIPRParRegion(List<StationModel> stations) {
     Map<String, Map<int, List<double>>> iprParRegionEtAnnee = {};
 
     for (var station in stations) {
@@ -88,9 +65,7 @@ class GraphIprRegion extends ConsumerWidget {
       }
     }
 
-    // Calcul de la moyenne par région et par année
     Map<String, Map<int, double>> moyennesParRegionEtAnnee = {};
-
     iprParRegionEtAnnee.forEach((region, dataParAnnee) {
       moyennesParRegionEtAnnee[region] = dataParAnnee.map((annee, valeurs) =>
           MapEntry(annee, valeurs.reduce((a, b) => a + b) / valeurs.length));
@@ -99,83 +74,46 @@ class GraphIprRegion extends ConsumerWidget {
     return moyennesParRegionEtAnnee;
   }
 
+  LineChartBarData createLineBarData({
+    required List<FlSpot> points,
+    required double minY,
+    required double maxY,
+    required GradientData baseGradient,
+  }) {
+    final dataYMin = points.map((e) => e.y).reduce((a, b) => a < b ? a : b);
+    final dataYMax = points.map((e) => e.y).reduce((a, b) => a > b ? a : b);
+    final constrainedGradient = baseGradient.getConstrainedGradient(
+      dataYMin,
+      dataYMax,
+      minY,
+      maxY,
+    );
 
-
-
-
-
-
-
-
-
-
-  Color getColorForValue(double value) {
-    if (value == 1) return iprTresBon;
-    if (value <= 2) return iprBon;
-    if (value <= 3) return iprMoyen;
-    if (value <= 4) return iprMauvais;
-    return iprTresMauvais;
+    return LineChartBarData(
+      spots: points,
+      isCurved: true,
+      barWidth: 3,
+      gradient: LinearGradient(
+        begin: Alignment(0, 1),
+        end: Alignment(0, -1),
+        colors: constrainedGradient.colors,
+        stops: constrainedGradient.stops,
+      ),
+      dotData: FlDotData(
+        show: true,
+        getDotPainter: (spot, percent, barData, index) {
+          final color = baseGradient.getColor(invlerp(minY, maxY, spot.y));
+          return FlDotCirclePainter(
+            radius: 3,
+            color: color,
+            strokeWidth: 1,
+            strokeColor: Colors.white,
+          );
+        },
+      ),
+      belowBarData: BarAreaData(show: false),
+    );
   }
-
-  List<LineChartBarData> generateGradientLineBars(List<FlSpot> points) {
-    List<LineChartBarData> lineBars = [];
-    Set<FlSpot> drawnPoints = {}; // Ensemble pour suivre les points déjà dessinés
-
-    // Initialiser la première paire de points pour commencer le tracé.
-    if (points.isNotEmpty) {
-      // On va parcourir les points successivement
-      FlSpot previousPoint = points[0];
-      drawnPoints.add(previousPoint); // Ajouter le premier point comme déjà dessiné
-
-      for (int i = 1; i < points.length; i++) {
-        FlSpot currentPoint = points[i];
-
-        // Vérifier si le point courant a déjà été dessiné
-        if (drawnPoints.contains(currentPoint)) {
-          // Si le point existe déjà, ne pas ajouter de segment supplémentaire
-          continue;
-        }
-
-        Color startColor = getColorForValue(previousPoint.y);
-        Color endColor = getColorForValue(currentPoint.y);
-
-        // Ajouter un segment entre le point précédent et le point courant
-        lineBars.add(
-          LineChartBarData(
-            spots: [previousPoint, currentPoint], // Segment entre le point précédent et le point courant
-            isCurved: true,
-            barWidth: 4,
-            gradient: LinearGradient(
-              colors: [startColor, endColor], // Dégradé entre les couleurs
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-            ),
-            dotData: FlDotData(
-              show: true,
-              getDotPainter: (spot, percent, barData, index) {
-                return FlDotCirclePainter(
-                  radius: 5,
-                  color: getColorForValue(spot.y),
-                  strokeWidth: 1.5,
-                  strokeColor: Colors.white,
-                );
-              },
-            ),
-            belowBarData: BarAreaData(show: false),
-          ),
-        );
-
-        // Ajouter le point courant à l'ensemble des points dessinés
-        drawnPoints.add(currentPoint);
-
-        // Mettre à jour le point précédent pour la prochaine itération
-        previousPoint = currentPoint;
-      }
-    }
-
-    return lineBars;
-  }
-
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -183,106 +121,231 @@ class GraphIprRegion extends ConsumerWidget {
 
     return stationsState.when(
       data: (stations) {
+        const regionSelectionnee = "Normandie";
 
 
 
-        Map<String, Map<int, double>> evolutionIPR = calculerEvolutionIPRParRegion(stations);
+        final evolutionIPR = calculerEvolutionIPRParRegion(stations);
 
-        String regionSelectionnee = "Normandie";
-        Map<int, double> donneesGraphique = evolutionIPR[regionSelectionnee] ?? {};
+        final donneesGraphique = evolutionIPR[regionSelectionnee] ?? {};
 
-        // 📌 Étape 1: Filtrer les valeurs et moyenner si plusieurs mesures par an
         Map<int, List<double>> valeursParAnnee = {};
         donneesGraphique.forEach((annee, ipr) {
           valeursParAnnee.putIfAbsent(annee, () => []).add(ipr);
         });
 
-        Map<int, double> donneesFiltrees = valeursParAnnee.map((annee, valeurs) =>
+        final donneesFiltrees = valeursParAnnee.map((annee, valeurs) =>
             MapEntry(annee, valeurs.reduce((a, b) => a + b) / valeurs.length));
 
-        // 📌 Étape 2: Trier les données par année
-        var sortedData = donneesFiltrees.entries.toList()
+        final sortedData = donneesFiltrees.entries.toList()
           ..sort((a, b) => a.key.compareTo(b.key));
 
-        // 📌 Étape 3: Transformer en points pour la courbe
         List<FlSpot> points = sortedData.map((entry)
         {
-          return FlSpot(entry.key.toDouble(), double.parse((entry.value).toStringAsFixed(5)));
+          return FlSpot(entry.key.toDouble(), double.parse((entry.value).toStringAsFixed(3)));
         }).toList();
 
-        return Expanded(// ✅ Rend le graphe responsive
+        final gradient = GradientData(
+          [0.0, 0.25, 0.5, 0.75, 1],
+          [
+            iprTresBon,
+            iprBon,
+            iprMoyen,
+            iprMauvais,
+            iprTresMauvais,
+          ],
+        );
+
+        return Expanded(
           child: LineChart(
-            LineChartData(
-              minY: 0.8, // ✅ Fixe l'axe Y entre 1 et 5
-              maxY: 5.2,
-              backgroundColor: backgroundGraph,
-              gridData: FlGridData(
-                show: true,
-                drawVerticalLine: true,
-                drawHorizontalLine: true,
-                getDrawingHorizontalLine: (value) {
-                  return FlLine(
-                    color: Colors.grey.shade300,
-                    strokeWidth: 1,
-                  );
-                },
-                getDrawingVerticalLine: (value) {
-                  return FlLine(
-                    color: Colors.grey.shade300,
-                    strokeWidth: 1,
-                  );
-                },
-              ),
-              titlesData: FlTitlesData
-                (
-                leftTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    reservedSize: 30, // ✅ Espace pour éviter le chevauchement
-                  ),
-                ),
-                bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    interval: 5, // ✅ Afficher les années tous les 5 ans
-                    getTitlesWidget: (value, meta) {
-                      return Text(
-                        value.toInt().toString(), // ✅ Affichage correct des années
-                        style: TextStyle(fontSize: 12),
-                      );
-                    },
-                  ),
-                ),
-                topTitles: AxisTitles(
-                  sideTitles: SideTitles(showTitles: false), // ✅ Supprime les "2K"
-                ),
-              ),
-              borderData: FlBorderData(show: true),
+                      LineChartData(
+                        minY: 1,
+                        maxY: 5,
+                        backgroundColor: backgroundGraph,
+                        gridData: FlGridData(
+                          show: true,
+                          drawVerticalLine: true,
+                          drawHorizontalLine: true,
+                          getDrawingHorizontalLine: (value) {
+                            return FlLine(
+                              color: Colors.grey.shade300,
+                              strokeWidth: 1,
+                            );
+                          },
+                          getDrawingVerticalLine: (value) {
+                            return FlLine(
+                              color: Colors.grey.shade300,
+                              strokeWidth: 1,
+                            );
+                          },
+                        ),
+                        titlesData: FlTitlesData(
+                          leftTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              reservedSize: 30, // ✅ Espace pour éviter le chevauchement
+                            ),
+                          ),
+                          bottomTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              interval: 5, // ✅ Afficher les années tous les 5 ans
+                              getTitlesWidget: (value, meta) {
+                                return Text(
+                                  value.toInt().toString(), // ✅ Affichage correct des années
+                                  style: TextStyle(fontSize: 12),
+                                );
+                              },
+                            ),
+                          ),
+                          topTitles: AxisTitles(
+                            sideTitles: SideTitles(showTitles: false), // ✅ Supprime les "2K"
+                          ),
+                        ),
+                        borderData: FlBorderData(show: true),
+                        lineBarsData: [
+                          createLineBarData(
+                            points: points,
+                            minY: 1,
+                            maxY: 5,
+                            baseGradient: gradient,
+                          ),
+                        ],
+                        lineTouchData: LineTouchData(
+                          enabled: true,
+                          getTouchedSpotIndicator:
+                              (LineChartBarData barData, List<int> spotIndexes) {
+                            return spotIndexes.map((index) {
+                              final spot = barData.spots[index];
+                              final color = gradient.getColor(invlerp(1, 5, spot.y));
 
-              lineBarsData: generateGradientLineBars(points),
-              lineTouchData: LineTouchData(
-                enabled: true,  // Active les interactions avec la ligne
-                handleBuiltInTouches: true,  // Active la gestion des touches par défaut
-                touchCallback: (FlTouchEvent event, LineTouchResponse? response) {
-                  if (response == null || response.lineBarSpots == null) {
-                    return;
-                  }
-                  if (event is FlTapUpEvent) {
-                    // Gérer l'événement de tap si nécessaire
-                  }
-                },
+                              return TouchedSpotIndicatorData(
+                                FlLine(
+                                  color: color, // ligne vers point
+                                  strokeWidth: 5,
+                                ),
+                                FlDotData(
+                                  show: true,
+                                  getDotPainter: (spot, percent, barData, index) {
+                                    return FlDotCirclePainter(
+                                      radius: 6, // point
+                                      color: color,
+                                      strokeWidth: 5,
+                                      strokeColor: Colors.white,
+                                    );
+                                  },
+                                ),
+                              );
+                            }).toList();
+                          },
+                          touchTooltipData: LineTouchTooltipData(
 
-              ),
-
-
-
-            ),
+                            getTooltipItems: (touchedSpots) {
+                              return touchedSpots.map((barSpot) {
+                                final y = barSpot.y;
+                                final color = gradient.getColor(invlerp(1, 5, y));
+                                return LineTooltipItem(
+                                  y.toStringAsFixed(3),
+                                  TextStyle(
+                                    color: color,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                );
+                              }).toList();
+                            },
+                          ),
+                        ),
+                      ),
           ),
         );
       },
-      loading: () => Center(child: CircularProgressIndicator()), // Indicateur de chargement
-      error: (err, stack) => Center(child: Text("Erreur: $err")), // Gestion d'erreur
+      loading: () => Center(child: CircularProgressIndicator()),
+      error: (err, stack) => Center(child: Text("Erreur: $err")),
     );
+  }
+}
 
+
+// Data class for gradient data
+// Linear interpolation: https://en.wikipedia.org/wiki/Linear_interpolation
+double lerp(num a, num b, double t) {
+  return a.toDouble() * (1.0 - t) + b.toDouble() * t;
+}
+
+// Inverse lerp: https://www.gamedev.net/articles/programming/general-and-gameplay-programming/inverse-lerp-a-super-useful-yet-often-overlooked-function-r5230/
+double invlerp(num a, num b, num x) {
+  return (x - a.toDouble()) / (b.toDouble() - a.toDouble());
+}
+
+// For interpolating between colors
+Color lerpColor(Color a, Color b, double t) {
+  int lerpInt(int a, int b, double t) => lerp(a, b, t).round();
+  return Color.fromARGB(
+    lerpInt(a.alpha, b.alpha, t),
+    lerpInt(a.red, b.red, t),
+    lerpInt(a.green, b.green, t),
+    lerpInt(a.blue, b.blue, t),
+  );
+}
+
+// Data class for gradient data
+class GradientData {
+  final List<double> stops;
+  final List<Color> colors;
+
+  GradientData(this.stops, this.colors)
+      : assert(stops.length == colors.length);
+
+  // Get the color value at any point in a gradient
+  Color getColor(double t) {
+    assert(stops.length == colors.length);
+    if (t <= 0) return colors.first;
+    if (t >= 1) return colors.last;
+
+    for (int i = 0; i < stops.length - 1; i++) {
+      final stop = stops[i];
+      final nextStop = stops[i + 1];
+      final color = colors[i];
+      final nextColor = colors[i + 1];
+      if (t >= stop && t < nextStop) {
+        final lerpT = invlerp(stop, nextStop, t);
+        return lerpColor(color, nextColor, lerpT);
+      }
+    }
+
+    return colors.last;
+  }
+
+  // Calculate a new gradient for a subset of this gradient
+  GradientData getConstrainedGradient(
+      double dataYMin, // Min y-value of the data set
+      double dataYMax, // Max y-value of the data set
+      double graphYMin, // Min value of the y-axis
+      double graphYMax, // Max value of the y-axis
+      )
+  {
+    // The "new" beginning and end stop positions for the gradient
+    final tMin = invlerp(graphYMin, graphYMax, dataYMin);
+    final tMax = invlerp(graphYMin, graphYMax, dataYMax);
+
+    final newStops = <double>[];
+    final newColors = <Color>[];
+
+    newStops.add(0);
+    newColors.add(getColor(tMin));
+
+    for (int i=0 ;i < 0; i < stops.length, i++) {
+      final stop = stops[i];
+      final color = colors[i];
+      if (stop <= tMin || stop >= tMax) continue;
+      final stopT = invlerp(tMin, tMax, stop);
+      newStops.add(stopT);
+      newColors.add(color);
+    }
+
+    newStops.add(1);
+    newColors.add(getColor(tMax));
+
+    return GradientData(newStops, newColors);
   }
 }
