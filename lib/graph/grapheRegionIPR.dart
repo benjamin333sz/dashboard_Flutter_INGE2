@@ -1,15 +1,13 @@
 import 'package:dashboard/const/constant.dart';
 import 'package:flutter/material.dart';
 import '../model/station_model.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/fish_provider.dart';
-import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class GraphIprRegion extends ConsumerWidget {
+  const GraphIprRegion({super.key});
+
   double calculerMoyenneIPRParAnnee(List<Prelevement> prelevements, List<int> annees) {
     List<double> valeursIPR = prelevements
         .where((p) => annees.contains(p.date_operation.year))
@@ -104,7 +102,7 @@ class GraphIprRegion extends ConsumerWidget {
         getDotPainter: (spot, percent, barData, index) {
           final color = baseGradient.getColor(invlerp(minY, maxY, spot.y));
           return FlDotCirclePainter(
-            radius: 3,
+            radius: 5,
             color: color,
             strokeWidth: 1,
             strokeColor: Colors.white,
@@ -279,14 +277,9 @@ double invlerp(num a, num b, num x) {
 
 // For interpolating between colors
 Color lerpColor(Color a, Color b, double t) {
-  int lerpInt(int a, int b, double t) => lerp(a, b, t).round();
-  return Color.fromARGB(
-    lerpInt(a.alpha, b.alpha, t),
-    lerpInt(a.red, b.red, t),
-    lerpInt(a.green, b.green, t),
-    lerpInt(a.blue, b.blue, t),
-  );
+  return Color.lerp(a, b, t)!;
 }
+
 
 // Data class for gradient data
 class GradientData {

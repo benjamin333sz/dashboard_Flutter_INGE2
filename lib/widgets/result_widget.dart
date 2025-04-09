@@ -1,10 +1,10 @@
-import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../data/result_data.dart';
+
 import '../model/prelevement_model.dart';
 import '../providers/fish_provider.dart';
-import '../widgets/header_widget.dart';
+
 
 
 class ResultWidget extends ConsumerStatefulWidget {
@@ -37,7 +37,7 @@ class _ResultWidgetState extends ConsumerState<ResultWidget> {
     }
   }
 
-  Timer? _debounce;
+
 @override
   Widget build(BuildContext context){
     final fishData=ref.watch(fishDataProvider);
@@ -89,13 +89,13 @@ class _ResultWidgetState extends ConsumerState<ResultWidget> {
                 return Column(
                   children: [
                     ListTile(
-                      title: Text('Commune : ${fish.libelleCommune ?? "N/A"}'),
+                      title: Text('Commune : ${fish.libelleCommune }'),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('Date : ${fish.dateOperation.split("T")[0]}'),
-                          Text('Code Classe : ${fish.ipr_code_classe ?? "N/A"}'),
-                          Text('Libellé Classe : ${fish.ipr_libelle_classe ?? "N/A"}'),
+                          Text('Code Classe : ${fish.ipr_code_classe }'),
+                          Text('Libellé Classe : ${fish.ipr_libelle_classe }'),
                         ],
                       ),
                     ),

@@ -1,17 +1,16 @@
 import 'package:dashboard/const/constant.dart';
 import 'package:flutter/material.dart';
-import '../model/station_model.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/fish_provider.dart';
-import 'package:intl/intl.dart';
 
 const LatLng currentLocation = LatLng(48.859651, 2.341497);
 
 
 class FrenchMarkerMap extends ConsumerWidget {
+  const FrenchMarkerMap({super.key});
+
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

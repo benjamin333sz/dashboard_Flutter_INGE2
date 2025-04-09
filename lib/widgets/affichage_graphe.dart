@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import '../widgets/affichage_graphe.dart';
-import '../map/french_marker_map.dart';
+import '../legend_graph/legende_graph_france.dart';
+import '../legend_graph/legende_graph_station.dart';
 
-class MainScreen extends StatelessWidget{
-  const MainScreen({super.key});
 
+class AffichageGraphe extends StatelessWidget {
+  const AffichageGraphe({super.key});
 
   @override
-  Widget build(BuildContext context){
-
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: LayoutBuilder(
@@ -20,13 +19,12 @@ class MainScreen extends StatelessWidget{
                 horizontal: horizontalPadding,
                 vertical: verticalPadding,
               ),
-              child: Row(
+              child: Column(
                 children: [
-                  //Expanded(flex: 1, child: TitleWidget()),
-                  //Expanded(flex: 2, child: ResearchWidget()),
-                  Expanded(child: FrenchMarkerMap()),
-                  //Expanded( child: LegendeGraphRegion()),
-                  Expanded( child: AffichageGraphe()),
+                  Flexible(flex: 4, child: LegendeGraphFrance()), // Adjusted flex value
+                  //Flexible(flex: 4, child: LegendeGraphRegion()),
+                  Flexible(flex: 4, child: LegendeGraphStation()), // Adjusted flex value
+
                 ],
               ),
             );
@@ -34,6 +32,5 @@ class MainScreen extends StatelessWidget{
         ),
       ),
     );
-
   }
 }

@@ -68,13 +68,13 @@ class Prelevement {
 
   factory Prelevement.fromJson(Map<String, dynamic> json) {
 
-    DateTime date_operation;
+    DateTime dateOperation;
     try {
-      date_operation = DateTime.parse(json['date_operation']);
+      dateOperation = DateTime.parse(json['date_operation']);
     } catch (e) {
 
       print('❌ Erreur de conversion de la date : ${json['date_operation']}');
-      date_operation = DateTime.now();
+      dateOperation = DateTime.now();
     }
 
     return Prelevement(

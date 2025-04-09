@@ -4,6 +4,8 @@ import 'package:latlong2/latlong.dart';
 
 
 class FrenchRegionMaps extends StatelessWidget {
+  const FrenchRegionMaps({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
