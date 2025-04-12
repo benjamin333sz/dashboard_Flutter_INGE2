@@ -15,7 +15,7 @@ class LegendeGraphRegion extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              "Dégradation de l'Indice Poisson Rivière (IPR) au niveau National ",
+              "Dégradation de l'Indice Poisson Rivière (IPR) par région",
               style: TextStyle(fontSize: 20),
               textAlign: TextAlign.center,
             ),

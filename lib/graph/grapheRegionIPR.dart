@@ -4,6 +4,7 @@ import '../model/station_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/fish_provider.dart';
 import 'package:fl_chart/fl_chart.dart';
+import '../providers/region_provider.dart';
 
 class GraphIprRegion extends ConsumerWidget {
   const GraphIprRegion({super.key});
@@ -77,7 +78,8 @@ class GraphIprRegion extends ConsumerWidget {
     required double minY,
     required double maxY,
     required GradientData baseGradient,
-  }) {
+  })
+  {
     final dataYMin = points.map((e) => e.y).reduce((a, b) => a < b ? a : b);
     final dataYMax = points.map((e) => e.y).reduce((a, b) => a > b ? a : b);
     final constrainedGradient = baseGradient.getConstrainedGradient(
@@ -119,7 +121,10 @@ class GraphIprRegion extends ConsumerWidget {
 
     return stationsState.when(
       data: (stations) {
-        const regionSelectionnee = "Normandie";
+        final regionSelectionnee = ref.watch(selectedRegionProvider);
+        if (regionSelectionnee == null) {
+          return const Center(child: Text("Veuillez sélectionner une région"));
+        }
 
 
 

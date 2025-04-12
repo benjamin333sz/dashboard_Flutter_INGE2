@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../legend_graph/legende_graph_france.dart';
 import '../legend_graph/legende_graph_station.dart';
-
+import '../legend_graph/legende_graph_region.dart';
 
 class AffichageGraphe extends StatelessWidget {
   const AffichageGraphe({super.key});
@@ -21,8 +21,8 @@ class AffichageGraphe extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  Flexible(flex: 4, child: LegendeGraphFrance()), // Adjusted flex value
-                  //Flexible(flex: 4, child: LegendeGraphRegion()),
+                  ///Flexible(flex: 4, child: LegendeGraphFrance()), // Adjusted flex value
+                  Flexible(flex: 4, child: LegendeGraphRegion()),
                   Flexible(flex: 4, child: LegendeGraphStation()), // Adjusted flex value
 
                 ],

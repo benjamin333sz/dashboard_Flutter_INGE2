@@ -2,15 +2,18 @@ import 'package:dashboard/widgets/region_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/region_provider.dart';
 
 
-class FrenchRegionMaps extends StatefulWidget {
+class FrenchRegionMaps extends ConsumerStatefulWidget {
   const FrenchRegionMaps({super.key});
+
   @override
   _FrenchRegionMapsState createState() => _FrenchRegionMapsState();
 }
 
-class _FrenchRegionMapsState extends State<FrenchRegionMaps> {
+class _FrenchRegionMapsState extends ConsumerState<FrenchRegionMaps> {
   final MapController _mapController = MapController();
 
   // Nouvelle méthode pour centrer sur une région
@@ -19,11 +22,13 @@ class _FrenchRegionMapsState extends State<FrenchRegionMaps> {
       setState(() {
         _selectedRegion = null;
         // Réinitialiser la vue (zoom par défaut)
-        _mapController?.move(
+        _mapController.move(
           LatLng(46.603354, 1.888334), // Centre de la France
-          6.0, // Zoom par défaut
+          4.0, // Zoom par défaut
         );
       });
+      ref.read(selectedRegionProvider.notifier).state = null; // 👈 met à jour le provider
+
       return;
     }
 
@@ -33,9 +38,9 @@ class _FrenchRegionMapsState extends State<FrenchRegionMaps> {
     final center = _computePolygonCenter(points);
 
     setState(() {
-      _selectedRegion = regionName;
-      _mapController?.move(center, 8); // Zoom + centrage
+      _mapController.move(center, 7); // Zoom + centrage
     });
+    ref.read(selectedRegionProvider.notifier).state = regionName; // 👈
   }
 
 // Calculer le centre d'un polygone
