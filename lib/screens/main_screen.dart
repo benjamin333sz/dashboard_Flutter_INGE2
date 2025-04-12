@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/affichage_graphe.dart';
 import '../map/french_marker_map.dart';
-
+import '../map/french_region_map.dart';
 class MainScreen extends StatelessWidget{
   const MainScreen({super.key});
 
@@ -24,7 +24,7 @@ class MainScreen extends StatelessWidget{
                 children: [
                   //Expanded(flex: 1, child: TitleWidget()),
                   //Expanded(flex: 2, child: ResearchWidget()),
-                  Expanded(child: FrenchMarkerMap()),
+                  Expanded(child: FrenchRegionMaps()),
                   //Expanded( child: LegendeGraphRegion()),
                   Expanded( child: AffichageGraphe()),
                 ],

@@ -1,111 +1,207 @@
+import 'package:dashboard/widgets/region_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 
-class FrenchRegionMaps extends StatelessWidget {
+class FrenchRegionMaps extends StatefulWidget {
   const FrenchRegionMaps({super.key});
+  @override
+  _FrenchRegionMapsState createState() => _FrenchRegionMapsState();
+}
+
+class _FrenchRegionMapsState extends State<FrenchRegionMaps> {
+  final MapController _mapController = MapController();
+
+  // Nouvelle méthode pour centrer sur une région
+  void _zoomToRegion(String? regionName) {
+    if (regionName == null || regionName == "France") {
+      setState(() {
+        _selectedRegion = null;
+        // Réinitialiser la vue (zoom par défaut)
+        _mapController?.move(
+          LatLng(46.603354, 1.888334), // Centre de la France
+          6.0, // Zoom par défaut
+        );
+      });
+      return;
+    }
+
+    // Trouver la région et calculer son centre
+    final region = _regions.firstWhere((r) => r['name'] == regionName);
+    final points = region['points'] as List<LatLng>;
+    final center = _computePolygonCenter(points);
+
+    setState(() {
+      _selectedRegion = regionName;
+      _mapController?.move(center, 8); // Zoom + centrage
+    });
+  }
+
+// Calculer le centre d'un polygone
+  LatLng _computePolygonCenter(List<LatLng> points) {
+    double lat = 0, lng = 0;
+    for (var point in points) {
+      lat += point.latitude;
+      lng += point.longitude;
+    }
+    return LatLng(lat / points.length, lng / points.length);
+  }
+
+  final List<Map<String, dynamic>> _regions = [
+    {
+      'name': 'Île-de-France',
+      'points': _IledeFrance,
+      'color': Colors.blue,
+    },
+    {
+      'name': 'Centre-Val de Loire',
+      'points': _CentreValdeLoire,
+      'color': Colors.red,
+    },
+    {
+      'name': 'Bourgogne-Franche-Comté',
+      'points': _BourgogneFrancheComte,
+      'color': Colors.green,
+    },
+    {
+      'name': 'Normandie',
+      'points': _Normandie,
+      'color': Colors.orange,
+    },
+    {
+      'name': 'Hauts-de-France',
+      'points': _HautsdeFrance,
+      'color': Colors.purple,
+    },
+    {
+      'name': 'Grand Est',
+      'points': _GrandEst,
+      'color': Colors.teal,
+    },
+    {
+      'name': 'Pays de la Loire',
+      'points': _PaysdelaLoire,
+      'color': Colors.pink,
+    },
+    {
+      'name': 'Bretagne',
+      'points': _Bretagne,
+      'color': Colors.indigo,
+    },
+    {
+      'name': 'Nouvelle-Aquitaine',
+      'points': _NouvelleAquitaine,
+      'color': Colors.amber,
+    },
+    {
+      'name': 'Occitanie',
+      'points': _Occitanie,
+      'color': Colors.cyan,
+    },
+    {
+      'name': 'Auvergne-Rhône-Alpes',
+      'points': _AuvergneRhoneAlpes,
+      'color': Colors.lime,
+    },
+    {
+      'name': "Provence-Alpes-Côte d'Azur",
+      'points': _ProvenceAlpesCotedAzur,
+      'color': Colors.deepOrange,
+    },
+    {
+      'name': 'Corse',
+      'points': _Corse,
+      'color': Colors.brown,
+    },
+  ];
+
+  String? _selectedRegion;
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Régions de France')),
-      body: FlutterMap(
-        options: MapOptions(
-          initialCenter: LatLng(46.603354, 1.888334), // Centre de la France
-          initialZoom: 6.0,
-        ),
+      appBar: AppBar(
+        title: const Text('Carte des Régions Françaises'),
+        backgroundColor: Colors.blue[800],
+      ),
+      body: Stack(
         children: [
-          TileLayer(
-            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-            userAgentPackageName: 'com.example.app',
-          ),
-          PolygonLayer(
-            polygons: [
-              Polygon(
-                points: _IledeFrance,
-                color: Colors.primaries[0].withOpacity(0.3),
-                borderColor: Colors.primaries[0],
-                borderStrokeWidth: 2,
+          // Carte principale
+          FlutterMap(
+            mapController: _mapController,
+            options: MapOptions(
+              initialCenter: const LatLng(46.603354, 1.888334), // Centre France
+              initialZoom: 5.5,
+              onTap: (_, LatLng point) => _handleMapTap(point),
+            ),
+            children: [
+              TileLayer(
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                userAgentPackageName: 'com.example.app',
               ),
-              Polygon(
-                points: _CentreValdeLoire,
-                color: Colors.primaries[1].withOpacity(0.3),
-                borderColor: Colors.primaries[1],
-                borderStrokeWidth: 2,
-              ),
-              Polygon(
-                points: _BourgogneFrancheComte,
-                color: Colors.primaries[2].withOpacity(0.3),
-                borderColor: Colors.primaries[2],
-                borderStrokeWidth: 2,
-              ),
-              Polygon(
-                points: _Normandie,
-                color: Colors.primaries[3].withOpacity(0.3),
-                borderColor: Colors.primaries[3],
-                borderStrokeWidth: 2,
-              ),
-              Polygon(
-                points: _HautsdeFrance,
-                color: Colors.primaries[4].withOpacity(0.3),
-                borderColor: Colors.primaries[4],
-                borderStrokeWidth: 2,
-              ),
-              Polygon(
-                points: _GrandEst,
-                color: Colors.primaries[5].withOpacity(0.3),
-                borderColor: Colors.primaries[5],
-                borderStrokeWidth: 2,
-              ),
-              Polygon(
-                points: _PaysdelaLoire,
-                color: Colors.primaries[6].withOpacity(0.3),
-                borderColor: Colors.primaries[6],
-                borderStrokeWidth: 2,
-              ),
-              Polygon(
-                points: _Bretagne,
-                color: Colors.primaries[7].withOpacity(0.3),
-                borderColor: Colors.primaries[7],
-                borderStrokeWidth: 2,
-              ),
-              Polygon(
-                points: _NouvelleAquitaine,
-                color: Colors.primaries[8].withOpacity(0.3),
-                borderColor: Colors.primaries[8],
-                borderStrokeWidth: 2,
-              ),
-              Polygon(
-                points: _Occitanie,
-                color: Colors.primaries[9].withOpacity(0.3),
-                borderColor: Colors.primaries[9],
-                borderStrokeWidth: 2,
-              ),
-              Polygon(
-                points: _AuvergneRhoneAlpes,
-                color: Colors.primaries[10].withOpacity(0.3),
-                borderColor: Colors.primaries[10],
-                borderStrokeWidth: 2,
-              ),
-              Polygon(
-                points: _ProvenceAlpesCotedAzur,
-                color: Colors.primaries[11].withOpacity(0.3),
-                borderColor: Colors.primaries[11],
-                borderStrokeWidth: 2,
-              ),
-              Polygon(
-                points: _Corse,
-                color: Colors.primaries[12].withOpacity(0.3),
-                borderColor: Colors.primaries[12],
-                borderStrokeWidth: 2,
+              PolygonLayer(
+                polygons: _regions.map((region) => Polygon(
+                  points: region['points'],
+                  color: region['color'].withOpacity(
+                      _selectedRegion == region['name'] ? 0.7 : 0.3
+                  ),
+                  borderColor: region['color'],
+                  borderStrokeWidth: 2,
+                )).toList(),
               ),
             ],
           ),
+
+          // Panneau des boutons (en haut à gauche)
+          Positioned(
+            top: 20,
+            left: 20,
+            child: Material(
+              elevation: 8,
+              borderRadius: BorderRadius.circular(12),
+              child: FilterWidget(
+                onRegionSelected: _zoomToRegion, // Callback de zoom
+              ),
+            ),
+          ),
+
+
         ],
       ),
     );
   }
+
+
+  void _handleMapTap(LatLng point) {
+    for (var region in _regions) {
+      if (_isPointInPolygon(point, region['points'])) {
+        setState(() {
+          _selectedRegion = region['name'];
+        });
+        return;
+      }
+    }
+    setState(() => _selectedRegion = null);
+  }
+
+  bool _isPointInPolygon(LatLng point, List<LatLng> polygon) {
+    double x = point.latitude;
+    double y = point.longitude;
+
+    bool inside = false;
+    for (int i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+      double xi = polygon[i].latitude, yi = polygon[i].longitude;
+      double xj = polygon[j].latitude, yj = polygon[j].longitude;
+
+      bool intersect = ((yi > y) != (yj > y)) &&
+          (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+      if (intersect) inside = !inside;
+    }
+    return inside;
+  }
+}
 
   List<LatLng> get _IledeFrance => [
   LatLng(49.079654846732424, 2.5905242793946224),
@@ -5675,4 +5771,4 @@ class FrenchRegionMaps extends StatelessWidget {
   LatLng(41.858698242272276, 9.40226832441199)
   ];
 
-}
+
