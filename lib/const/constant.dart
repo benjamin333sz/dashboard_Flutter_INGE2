@@ -27,11 +27,11 @@ Map<String, String> correspondanceRegions = {
   "28": "Normandie",
   "32": "Hauts-de-France",
   "44": "Grand Est",
-  "52": "Pays de ma Loire",
+  "52": "Pays de la Loire",
   "53": "Bretagne",
   "75": "Nouvelle-Aquitaine",
   "76": "Occitanie",
   "84": "Auvergne-Rhône-Alpes",
-  "93": "Provences-Alpes-Côte d'Azur",
+  "93": "Provence-Alpes-Côte d'Azur",
   "94": "Corse"
 };

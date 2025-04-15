@@ -128,7 +128,8 @@ class GraphIprRegion extends ConsumerWidget {
 
 
 
-        final evolutionIPR = calculerEvolutionIPRParRegion(stations);
+        final evolutionIPR = ref.watch(evolutionIprProvider);
+
 
         final donneesGraphique = evolutionIPR[regionSelectionnee] ?? {};
 
