@@ -127,10 +127,6 @@ class _FrenchRegionMapsState extends ConsumerState<FrenchRegionMaps> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Carte des Régions Françaises'),
-        backgroundColor: Colors.blue[800],
-      ),
       body: Stack(
         children: [
           // Carte principale
