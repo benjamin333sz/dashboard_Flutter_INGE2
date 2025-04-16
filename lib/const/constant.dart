@@ -1,11 +1,11 @@
 import 'dart:ui';
 
 const cardBackgroundColor=Color(0xFFBABAFF);
-const primaryColor=Color(0xFF449DF5);
+const primaryColor=Color(0xFFFFFFFF);
 const secondaryColor=Color(0xFFFFFFFF);
-const backgroundColor=Color(0xFFC8F8F2);
+const backgroundColor=Color(0xFFFFFFFF);
 const selectionColor=Color(0xFF88B2AC);
-const backgroundGraph=Color(0xFFFFFFFF);
+const backgroundGraph=Color(0xFF0E0000);
 
 
 const iprTresBon=Color(0xFF00B631);

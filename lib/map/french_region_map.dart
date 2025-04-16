@@ -4,7 +4,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/region_provider.dart';
-import './point_region.dart';
+import '../calcul/point_region.dart';
 
 class FrenchRegionMaps extends ConsumerStatefulWidget {
   const FrenchRegionMaps({super.key});
