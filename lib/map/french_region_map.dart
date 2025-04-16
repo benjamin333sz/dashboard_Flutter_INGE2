@@ -38,7 +38,6 @@ class _FrenchRegionMapsState extends ConsumerState<FrenchRegionMaps> {
       ref.read(selectedRegionProvider.notifier).state = null;
       return;
     }
-
     final region = _regions.firstWhere((r) => r['name'] == regionName);
     final points = region['points'] as List<LatLng>;
     final center = _computePolygonCenter(points);
@@ -86,40 +85,35 @@ class _FrenchRegionMapsState extends ConsumerState<FrenchRegionMaps> {
   Widget build(BuildContext context) {
     final selectedRegion = ref.watch(selectedRegionProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Carte des Régions Françaises'),
-        backgroundColor: Colors.blue[800],
-      ),
-      body: Stack(
-        children: [
-          FlutterMap(
-            mapController: _mapController,
-            options: MapOptions(
-              initialCenter: const LatLng(46.603354, 1.888334),
-              initialZoom: 5.5,
-              onTap: (_, LatLng point) => _handleMapTap(point),
-            ),
-            children: [
-              TileLayer(
-                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                userAgentPackageName: 'com.example.app',
-              ),
-              PolygonLayer(
-                polygons: _regions.map((region) {
-                  final bool isSelected = selectedRegion == region['name'];
-                  return Polygon(
-                    points: region['points'],
-                    color: region['color'].withOpacity(isSelected ? 0.7 : 0.3),
-                    borderColor: region['color'],
-                    borderStrokeWidth: 2,
-                  );
-                }).toList(),
-              ),
-            ],
+    return Stack(
+      children: [
+        FlutterMap(
+          mapController: _mapController,
+          options: MapOptions(
+            initialCenter: const LatLng(46.603354, 1.888334),
+            initialZoom: 5.5,
+            onTap: (_, LatLng point) => _handleMapTap(point),
           ),
-          if (false)
-            (Positioned(
+          children: [
+            TileLayer(
+              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              userAgentPackageName: 'com.example.app',
+            ),
+            PolygonLayer(
+              polygons: _regions.map((region) {
+                final bool isSelected = selectedRegion == region['name'];
+                return Polygon(
+                  points: region['points'],
+                  color: region['color'].withOpacity(isSelected ? 0.7 : 0.3),
+                  borderColor: region['color'],
+                  borderStrokeWidth: 2,
+                );
+              }).toList(),
+            ),
+          ],
+        ),
+        if (false)
+          (Positioned(
             top: 20,
             left: 20,
             child: Material(
@@ -130,9 +124,9 @@ class _FrenchRegionMapsState extends ConsumerState<FrenchRegionMaps> {
               ),
             ),
           )),
-        ],
-      ),
+      ],
     );
+
   }
 }
 
