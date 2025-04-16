@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../widgets/affichage_graphe.dart';
 import '../map/french_marker_map.dart';
 import '../map/french_region_map.dart';
+import '../const/constant.dart';
+
 class MainScreen extends StatelessWidget{
   const MainScreen({super.key});
 
@@ -10,6 +12,11 @@ class MainScreen extends StatelessWidget{
   Widget build(BuildContext context){
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Évolution de l'Indice Poisson Rivière en France", style: TextStyle(fontSize: 32),),
+        centerTitle: true,
+        backgroundColor: backgroundColor,
+      ),
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {

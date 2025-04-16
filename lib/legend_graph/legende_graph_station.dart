@@ -13,7 +13,7 @@ class LegendeGraphStation extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              "Dégradation de IPR de la station",
+              "Dégradation de l'IPR de la station",
               style: TextStyle(fontSize: 20),
               textAlign: TextAlign.center,
             ),

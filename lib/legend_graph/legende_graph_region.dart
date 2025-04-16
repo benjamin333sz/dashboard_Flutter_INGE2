@@ -31,7 +31,7 @@ class _LegendeGraphRegionState extends ConsumerState<LegendeGraphRegion> {
             padding: const EdgeInsets.all(8.0),
             child: Text(
 
-              "Dégradation de  (IPR) en ${isFrance ? "France" : regionLabel}",
+              "Dégradation de l'IPR en ${isFrance ? "France" : regionLabel}",
               style: TextStyle(fontSize: 20),
               textAlign: TextAlign.center,
             ),//l'Indice Poisson Rivière
