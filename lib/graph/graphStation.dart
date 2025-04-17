@@ -1,10 +1,11 @@
 import 'package:dashboard/const/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/fish_provider.dart';
+import '../providers/OLD_fish_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../calcul/couleur_graph.dart';
+import '../providers/station_provider.dart';
 
 class GraphIprStation extends ConsumerWidget {
   const GraphIprStation({super.key});
@@ -61,8 +62,14 @@ class GraphIprStation extends ConsumerWidget {
           return Center(child: Text("Aucune station disponible"));
         }
 
-        final station = stations.firstWhere((station) => station.code_station == "03254370");
-        final prelevements = station.prelevements;
+        final selectedStation = ref.watch(selectedStationProvider);
+
+        if (selectedStation == null) {
+          return Center(child: Text("Sélectionnez une station sur la carte."));
+        }
+
+        final prelevements = selectedStation.prelevements;
+
         /*for (var prelevement in prelevements) {
           print("Ipr ${prelevement.ipr_code_classe}, date ${prelevement.date_operation}");
         }
@@ -72,11 +79,16 @@ class GraphIprStation extends ConsumerWidget {
 
         prelevements.sort((a, b) => a.date_operation.compareTo(b.date_operation));
 
-        List<FlSpot> points = prelevements.map((prelevement) {
+        final validPrelevements = prelevements
+            .where((p) => p.ipr_code_classe.trim().isNotEmpty)
+            .toList();
+
+        List<FlSpot> points = validPrelevements.map((prelevement) {
           double x = prelevement.date_operation.millisecondsSinceEpoch.toDouble();
-          double y = double.parse((prelevement.ipr_code_classe));
+          double y = double.parse(prelevement.ipr_code_classe);
           return FlSpot(x, y);
         }).toList();
+
 
         final gradient = GradientData(
           [0.0, 0.25, 0.50, 0.75, 1],

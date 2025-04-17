@@ -1,4 +1,4 @@
-import 'package:dashboard/map/french_marker_map.dart';
+import 'package:dashboard/map/OLD_french_marker_map.dart';
 import 'package:flutter/material.dart';
 import '../widgets/affichage_graphe.dart';
 import '../map/french_interactive_map.dart';

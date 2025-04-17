@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/fish_provider.dart';
+import '../providers/OLD_fish_provider.dart';
 import '../providers/region_provider.dart';
+import '../providers/station_provider.dart';
 import '../calcul/point_region.dart';
 
 class FrenchInteractiveMap extends ConsumerStatefulWidget {
@@ -113,6 +114,10 @@ class _FrenchInteractiveMapState extends ConsumerState<FrenchInteractiveMap> {
         // FILTRE
         final filteredStations = stations.where((station) {
           final selected = selectedRegion;
+
+          final hasValidIpr = station.prelevements.any(
+                (prelevement) => prelevement.ipr_code_classe.trim().isNotEmpty,
+          );
           /*print('Selected region code: ${selectedRegion?['code']}');
           print('Station region code: ${station.code_region}');
           print('Station latitude: ${station.latitude},${station.longitude}');*/
@@ -120,7 +125,8 @@ class _FrenchInteractiveMapState extends ConsumerState<FrenchInteractiveMap> {
               station.libelle_station.trim().isNotEmpty &&
               selected != null &&
               selected['code'] != null &&
-              station.code_region == selected['code'];
+              station.code_region == selected['code']&&
+              hasValidIpr;
         }).toList();
 
 
@@ -160,35 +166,7 @@ class _FrenchInteractiveMapState extends ConsumerState<FrenchInteractiveMap> {
                   point: LatLng(station.latitude, station.longitude),
                   child: GestureDetector(
                     onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text(station.code_station),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Card(
-                                child: ExpansionTile(
-                                  title: Text(station.libelle_station),
-                                  subtitle: Text('Prélèvements: ${station.prelevements.length}'),
-                                  children: station.prelevements.map((prelevement) {
-                                    return ListTile(
-                                      title: Text('📅 ${prelevement.date_operation}'),
-                                      subtitle: Text('📊 ${prelevement.ipr_code_classe} - ${prelevement.ipr_libelle_classe}'),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            ],
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: Text("Fermer"),
-                            ),
-                          ],
-                        ),
-                      );
+                      ref.read(selectedStationProvider.notifier).state = station;
                     },
                     child: Icon(
                       Icons.location_pin,
