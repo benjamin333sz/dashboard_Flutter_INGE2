@@ -1,7 +1,7 @@
+import 'package:dashboard/map/french_marker_map.dart';
 import 'package:flutter/material.dart';
 import '../widgets/affichage_graphe.dart';
-import '../map/french_marker_map.dart';
-import '../map/french_region_map.dart';
+import '../map/french_interactive_map.dart';
 import '../const/constant.dart';
 
 class MainScreen extends StatelessWidget{
@@ -13,7 +13,7 @@ class MainScreen extends StatelessWidget{
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Évolution de l'Indice Poisson Rivière en France", style: TextStyle(fontSize: 32),),
+        title: Text("Évolution de l'Indice Poisson Rivière en France Métropolitaine", style: TextStyle(fontSize: 32),),
         centerTitle: true,
         backgroundColor: backgroundColor,
       ),
@@ -31,7 +31,7 @@ class MainScreen extends StatelessWidget{
                 children: [
                   //Expanded(flex: 1, child: TitleWidget()),
                   //Expanded(flex: 2, child: ResearchWidget()),
-                  Expanded(child: FrenchRegionMaps()),
+                  Expanded(child: FrenchInteractiveMap()),
                   //Expanded( child: LegendeGraphRegion()),
                   Expanded( child: AffichageGraphe()),
                 ],

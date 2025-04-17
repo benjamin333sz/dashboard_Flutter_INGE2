@@ -17,6 +17,7 @@ Map<String, List<Prelevement>> regrouperPrelevementsParRegion(List<StationModel>
   Map<String, List<Prelevement>> prelevementsParRegion = {};
 
   for (var station in stations) {
+    if (isGhostStation(station)) continue;
     String codeReg = station.code_region;
     String? region = correspondanceRegions[codeReg];
 
@@ -33,4 +34,13 @@ Map<String, double> calculerMoyenneParRegionAvecFiltre(List<StationModel> statio
   Map<String, List<Prelevement>> prelevementsParRegion = regrouperPrelevementsParRegion(stations);
   return prelevementsParRegion.map((region, prelevements) =>
       MapEntry(region, calculerMoyenneIPRParAnnee(prelevements, annees)));
+}
+
+
+bool isGhostStation(StationModel station) {
+  return station.libelle_station.trim().isEmpty &&
+      station.prelevements.length >= 100 &&
+      station.prelevements.every(
+              (p) => p.date_operation == station.prelevements.first.date_operation
+      );
 }

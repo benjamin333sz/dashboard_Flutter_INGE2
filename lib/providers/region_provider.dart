@@ -8,8 +8,7 @@ import '../calcul/France.dart';
 import '../calcul/region.dart';
 
 
-final selectedRegionProvider = StateProvider<String?>((ref) => null);
-
+final selectedRegionProvider = StateProvider<Map<String, String>?>((ref) => null);
 
 
 final evolutionIprProviderRegion = Provider<Map<String, Map<int, double>>>((ref) {

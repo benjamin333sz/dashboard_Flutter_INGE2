@@ -93,12 +93,17 @@ class GraphIprRegion extends ConsumerWidget {
           return const Center(child: Text("Erreur, devrait afficher graphe France IPR"));
         }
 
+        final regionCode = regionSelectionnee['code'];
+        final regionName = regionSelectionnee['name'];
 
+        final filteredStations = stations.where(
+                (station) => station.code_region == regionCode
+        ).toList();
 
         final evolutionIPR = ref.watch(evolutionIprProviderRegion);
 
 
-        final donneesGraphique = evolutionIPR[regionSelectionnee] ?? {};
+        final donneesGraphique = evolutionIPR[regionName] ?? {};
 
         Map<int, List<double>> valeursParAnnee = {};
         donneesGraphique.forEach((annee, ipr) {

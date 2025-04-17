@@ -43,7 +43,11 @@ class _FrenchRegionMapsState extends ConsumerState<FrenchRegionMaps> {
     final center = _computePolygonCenter(points);
 
     _mapController.move(center, 7);
-    ref.read(selectedRegionProvider.notifier).state = regionName;
+    ref.read(selectedRegionProvider.notifier).state = {
+      'name': region['name'],
+      'code': region['code']
+    };
+
   }
 
   LatLng _computePolygonCenter(List<LatLng> points) {

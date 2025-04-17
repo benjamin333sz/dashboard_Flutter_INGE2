@@ -22,7 +22,7 @@ class _LegendeGraphRegionState extends ConsumerState<LegendeGraphRegion> {
 
     final selectedRegion = ref.watch(selectedRegionProvider);
     final isFrance = selectedRegion == null || selectedRegion == "France";
-    final regionLabel = selectedRegion ?? "France";
+    final regionLabel = selectedRegion?["name"] ?? "France";
 
     return SafeArea(
       child: Column(
