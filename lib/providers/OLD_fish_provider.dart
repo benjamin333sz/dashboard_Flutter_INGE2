@@ -74,30 +74,6 @@ class FishDataNotifier extends StateNotifier<List<ResultModel>> {
 
 
 
-class StationNotifier extends StateNotifier<AsyncValue<List<StationModel>>> {
-  final StationData _stationData;
-
-  StationNotifier(this._stationData) : super(const AsyncValue.loading()) {
-    fetchStations();
-  }
-
-  Future<void> fetchStations() async {
-    try {
-      final stations = await _stationData.fetchStations();
-      state = AsyncValue.data(stations);
-    } catch (e) {
-      state = AsyncValue.error(e, StackTrace.current);
-    }
-  }
-}
-
-// Provider global
-final stationProvider = StateNotifierProvider<StationNotifier, AsyncValue<List<StationModel>>>(
-      (ref) => StationNotifier(StationData()),
-);
-
-
-
 
 
 

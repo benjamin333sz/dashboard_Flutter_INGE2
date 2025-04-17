@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/OLD_fish_provider.dart';
+import '../providers/Data_provider.dart';
 import '../providers/region_provider.dart';
 import '../providers/station_provider.dart';
 import '../calcul/point_region.dart';

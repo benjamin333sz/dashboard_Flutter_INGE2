@@ -55,7 +55,7 @@ class StationData {
 
 
 
-  Future<List<StationModel>> fetchStations() async {
+  Future<List<StationModel>> fetchStationsOnly() async {
     print('🔍 Début de la récupération des stations...');
 
     List<StationModel> allStations = [];
@@ -89,48 +89,8 @@ class StationData {
     }
 
     print('🎯 Total stations récupérées : ${allStations.length}');
-
-
-    print('📡 Lancement de la récupération des prélèvements...');
-    List<Prelevement> prelevements = await fetchAllPrelevements();
-
-    Map<String, List<Prelevement>> prelevementsParStation = {};
-    for (var prelevement in prelevements) {
-      String stationCode = prelevement.code_station;
-      prelevementsParStation.putIfAbsent(stationCode, () => []).add(prelevement);
-      //print('📌 Prélevement: Station=${prelevement.libelle_station}, Code=${prelevement.code_station}');
-
-    }
-
-
-    print('🛠️ Association des prélèvements aux stations...');
-    for (var station in allStations) {
-      //print(prelevementsParStation[station.code_station]);
-      station.prelevements = (prelevementsParStation[station.code_station] ?? []).toList();
-      //print("station.prelevements: ${station.prelevements}, station.code_station: ${station.code_station}, ");
-    }
-    /*for (var station in allStations.take(10)) { // Vérifier seulement 10 stations pour éviter trop de logs
-      print('📍 Station: ${station.libelle_station} (Code: ${station.code_station})');
-      print('   🔍 Nombre de prélèvements: ${station.prelevements.length}');
-
-      for (var prelevement in station.prelevements.take(3)) { // Affiche 3 prélèvements max par station
-        print('   ✅ ${prelevement.date_operation} | Classe: ${prelevement.ipr_code_classe}');
-      }
-    }*/
-
-
-
-    print('🎯 Finalisation : ${allStations.length} stations avec prélèvements');
-
-    for (var station in allStations) {
-      station.prelevements = prelevementsParStation[station.code_station] ?? [];
-      //print('📍 Station: ${station.libelle_station} (Code: ${station.code_station}) Nombre de prélèvements associés: ${station.prelevements.length}');
-
-    }
-
     return allStations;
   }
-
 
 
 }
