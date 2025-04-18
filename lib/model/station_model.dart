@@ -44,6 +44,19 @@ class StationModel {
       code_region: code_region,
     );
   }
+  Map<String, dynamic> toJson() {
+    return {
+      'code_station': code_station,
+      'libelle_station': libelle_station,
+      'libelle_commune': libelle_commune,
+      'libelle_region': libelle_region,
+      'latitude': latitude,
+      'longitude': longitude,
+      'code_region': code_region,
+      'prelevements': prelevements.map((p) => p.toJson()).toList(),
+    };
+  }
+
 }
 
 class Prelevement {
@@ -65,7 +78,17 @@ class Prelevement {
     required this.ipr_note,
 
   });
-
+  Map<String, dynamic> toJson() {
+    return {
+      'code_station': code_station,
+      'libelle_station': libelle_station,
+      'date_operation': date_operation.toIso8601String(),
+      'ipr_code_classe': ipr_code_classe,
+      'ipr_libelle_classe': ipr_libelle_classe,
+      'ipr_note': ipr_note,
+      'code_region': code_region,
+    };
+  }
   factory Prelevement.fromJson(Map<String, dynamic> json) {
 
     DateTime dateOperation;

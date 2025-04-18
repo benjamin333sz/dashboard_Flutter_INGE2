@@ -131,7 +131,14 @@ class GraphIprRegion extends ConsumerWidget {
             iprTresMauvais,
           ],
         );
-
+        if (points.isEmpty) {
+          return const Center(
+            child: Text(
+              "Aucune donnée disponible pour cette région. (Normalement, la Corse)",
+              style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+            ),
+          );
+        }
         return Expanded(
           child: LineChart(
                       LineChartData(
